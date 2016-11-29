@@ -1,0 +1,22 @@
+﻿@model IEnumerable<PublicLibrary.Models.Book>
+
+
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<img src="@Url.Content("~/Content/Images/background.jpg")" />
+
+<div class="row">
+    <div class="col-xs-12 col-md-12 ">
+        @foreach (var item in Model)
+        {
+            <div class="col-xs-12 col-md-1 ">
+                @Html.DisplayFor(modelItem => item.Title)
+              
+
+            </div>
+        }
+
+    </div>
+</div>

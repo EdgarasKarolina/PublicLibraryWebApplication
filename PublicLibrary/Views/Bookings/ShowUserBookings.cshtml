@@ -1,0 +1,37 @@
+﻿@model IEnumerable<PublicLibrary.Models.Booking>
+
+@{
+    ViewBag.Title = "ShowUserBookings";
+}
+
+<h2>My Bookings</h2>
+
+<p>
+    @Html.ActionLink("Search for a new book", "Index", "Books")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Book.Title)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Book.Author)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Book.Title)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Book.Author)
+        </td>
+        <td>           
+            @Html.ActionLink("Details", "Details", new { id=item.Id }) 
+        </td>
+    </tr>
+}
+
+</table>
