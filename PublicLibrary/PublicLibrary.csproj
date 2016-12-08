@@ -244,15 +244,22 @@
     <Compile Include="Migrations\201611261338388_update.Designer.cs">
       <DependentUpon>201611261338388_update.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201612041905546_changind staff.cs" />
+    <Compile Include="Migrations\201612041905546_changind staff.Designer.cs">
+      <DependentUpon>201612041905546_changind staff.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\Abstract\IRepository.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Book.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\Booking.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Reader.cs" />
+    <Compile Include="Models\Repositories\Repository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewModels\BookViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />
@@ -261,10 +268,15 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\css\home_view.css" />
     <Content Include="Content\Images\background.jpg" />
+    <Content Include="Content\Site.css">
+      <DependentUpon>Site.less</DependentUpon>
+    </Content>
+    <Content Include="Content\Site.min.css">
+      <DependentUpon>Site.css</DependentUpon>
+    </Content>
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
-    <Content Include="Content\Site.css" />
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -276,6 +288,11 @@
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="Content\bootstrap-theme.min.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
+    <None Include="compilerconfig.json" />
+    <None Include="compilerconfig.json.defaults">
+      <DependentUpon>compilerconfig.json</DependentUpon>
+    </None>
+    <Content Include="Content\Site.less" />
     <None Include="Scripts\jquery-3.1.1.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -380,6 +397,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201611261338388_update.resx">
       <DependentUpon>201611261338388_update.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612041905546_changind staff.resx">
+      <DependentUpon>201612041905546_changind staff.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

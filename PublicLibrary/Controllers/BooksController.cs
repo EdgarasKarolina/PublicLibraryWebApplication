@@ -8,12 +8,22 @@ using System.Web;
 using System.Web.Mvc;
 using PublicLibrary.Models;
 using Microsoft.AspNet.Identity;
+using PublicLibrary.Models.Abstract;
+using PublicLibrary.ViewModels;
 
 namespace PublicLibrary.Controllers
 {
     public class BooksController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+
+        //private Models.Abstract.IStudentRepository studentRepo2;
+       // private IRepository<Book> repository;
+
+       /* private BooksController(IRepository<Book> repository)
+        {
+            this.repository = repository;
+        } */
 
         /*  // GET: Books
           public ActionResult Index()
@@ -112,34 +122,68 @@ namespace PublicLibrary.Controllers
             }
             return View(book);
         }
-
+        /*
         // GET: Books/Create
         [Authorize(Roles = "Boss")]
         public ActionResult Create()
         {
             return View();
-        }
-
+        }  */
+        /*
         // POST: Books/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+          [HttpPost]
+          [Authorize(Roles = "Boss")]
+          [ValidateAntiForgeryToken]
+          public ActionResult Create([Bind(Include = "BookId,Title,Author,YearPublished,Genre,NumberOfPages,IsItAvailable")] Book book)
+          {
+              if (ModelState.IsValid)
+              {
+                  db.Books.Add(book);
+                  db.SaveChanges();
+                  return RedirectToAction("Index");
+              }
+
+              return View(book);
+          } */
+
+        public ActionResult Create()
+        {
+            BookViewModel model = new BookViewModel();
+
+            return View(model);
+        }
+
+
+        //ask about THIS!!!!!!!!!
         [HttpPost]
         [Authorize(Roles = "Boss")]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "BookId,Title,Author,YearPublished,Genre,NumberOfPages,IsItAvailable")] Book book)
+        public ActionResult Create([Bind(Include = "BookId,Title,Author,YearPublished,Genre,NumberOfPages,IsItAvailable")] BookViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
+                var book = new Book()
+                {
+                    Title = viewModel.Title,
+                    Author = viewModel.Author,
+                    YearPublished = viewModel.YearPublished,
+                    Genre = viewModel.Genre,
+                    NumberOfPages = viewModel.NumberOfPages,
+                    IsItAvailable = viewModel.IsItAvailable
+
+                };
                 db.Books.Add(book);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
-            return View(book);
-        }
+            return View("Index");
+        } 
 
         // GET: Books/Edit/5
-        
+
         [Authorize(Roles = "Boss")]
         public ActionResult Edit(int? id)
         {
