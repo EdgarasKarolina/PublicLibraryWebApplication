@@ -8,34 +8,71 @@ using System.Web;
 using System.Web.Mvc;
 using PublicLibrary.Models;
 using Microsoft.AspNet.Identity;
+using PublicLibrary.Models.Abstract;
+using PublicLibrary.Models.Repositories;
+using System.Data.Entity.Infrastructure;
+
+using Microsoft;
+using PublicLibrary.ViewModels;
 
 namespace PublicLibrary.Controllers
 {
     [Authorize]
     public class BookingsController : Controller
     {
+/*
+        private IBookingRepository bookingRepo;
+        private IReaderRepository readerRepo;
+
+        public BookingsController(IBookingRepository bookingRepo, IReaderRepository readerRepo)
+        {
+            this.bookingRepo = bookingRepo;
+            this.readerRepo = readerRepo;
+        }
+
+            */
+
         private ApplicationDbContext db = new ApplicationDbContext();
 
+      
+
+        
         // GET: Bookings
         [Authorize(Roles = "Boss")]
         public ActionResult Index()
         {
             var bookings = db.Bookings.Include(b => b.Book).Include(b => b.Reader);
+            
             return View(bookings.ToList());
-        }
+        }  
 
-        
+
         public ActionResult ShowUserBookings()
         {
             var userId = User.Identity.GetUserId();
             int readerId = db.Readers.Where(c => c.ApplicationUserId == userId).First().ReaderId;
             var bookings = db.Bookings.Include(b => b.Book).Include(b => b.Reader).Where(b=> b.ReaderId == readerId);
              return View(bookings.ToList());
-            // return "These are my bookings";
+            
         }
-
+        /*
         // GET: Bookings/Details/5
+        public ActionResult Details(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Booking booking = bookingRepo.Find(id);
+            if (booking == null)
+            {
+                return HttpNotFound();
+            }
+            return View(booking);
+        }  */
+
         
+        // GET: Bookings/Details/5
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -48,10 +85,10 @@ namespace PublicLibrary.Controllers
                 return HttpNotFound();
             }
             return View(booking);
-        }
+        }  
 
         // GET: Bookings/Create
-        
+        //using modelView instead of model
         public ActionResult Create(int? id)
         {
 
@@ -74,27 +111,39 @@ namespace PublicLibrary.Controllers
              int readerId = db.Readers.Where(c => c.ApplicationUserId == userId).First().ReaderId;
              ViewBag.ReaderId = readerId; */
             // ViewBag.ApplicationUserId = readerId;
+            BookingViewModel bookingViewModel = new BookingViewModel();
+            bookingViewModel.BookId = book.BookId;
+            bookingViewModel.Title = book.Title;
+            bookingViewModel.Author = book.Author;
+            bookingViewModel.YearPublished = book.YearPublished;
+            bookingViewModel.Genre = book.Genre;
+            bookingViewModel.NumberOfPages = book.NumberOfPages;
 
 
-            return View(book);
+            return View(bookingViewModel);
         }
 
         // POST: Bookings/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,ReaderId,BookId")] Booking booking)
+        public ActionResult Create([Bind(Include = "Id,ReaderId,BookId,IfWantEmail,EnterEmail")] BookingViewModel bookingViewModel)
         {
+            Booking booking = new Booking();
             if (ModelState.IsValid)
             {
                 var userId = User.Identity.GetUserId();
                 int readerId = db.Readers.Where(c => c.ApplicationUserId == userId).First().ReaderId;
-                
+
+                //assigning values to booking object
                 booking.ReaderId = readerId;
+                booking.BookId = bookingViewModel.BookId;
                 
-                db.Bookings.Add(booking);      
+                
+                db.Bookings.Add(booking);
+                bool value = bookingViewModel.IfWantEmail;
+                string value2 = bookingViewModel.EnterEmail;
                 db.SaveChanges();
+                
                 return RedirectToAction("ShowUserBookings");
             }
 

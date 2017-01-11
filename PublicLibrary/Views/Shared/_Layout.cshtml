@@ -8,6 +8,8 @@
     @Scripts.Render("~/bundles/modernizr")
     <link rel="stylesheet" type="text/css" href="~/Content/css/home_view.css">
     <link rel="stylesheet" type="text/css" href="~/Content/Site.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/Site.less">
+    
 
 </head>
 <body>
@@ -28,6 +30,12 @@
                     <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
                     <li>@Html.ActionLink("My Bookings", "ShowUserBookings", "Bookings")</li>                                     
                     <li>@Html.ActionLink("Search for a book", "Index", "Books")</li>
+
+                    @if (ViewContext.HttpContext.User.IsInRole("Boss"))
+                    {
+                      <li>@Html.ActionLink("See all bookings", "Index", "Bookings")</li> 
+                    }
+                   
                     
                 </ul>
                 @Html.Partial("_LoginPartial")
@@ -37,10 +45,12 @@
     <div class="container body-content">
         @RenderBody()
         <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-        </footer>
+         
     </div>
+
+   
+         @Html.Partial("_Footer")
+   
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")

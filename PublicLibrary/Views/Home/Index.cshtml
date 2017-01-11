@@ -7,16 +7,53 @@
 
 <img src="@Url.Content("~/Content/Images/background.jpg")" />
 
-<div class="row">
-    <div class="col-xs-12 col-md-12 ">
-        @foreach (var item in Model)
-        {
-            <div class="col-xs-12 col-md-1 ">
-                @Html.DisplayFor(modelItem => item.Title)
-              
-
+<div class="row" id="mainRow" style="background-color:#FFFFFF">
+    <div class="col-md-6" style="background-color:#FFF056;">
+        <h1>Top 3 books</h1>
+            <div class="row">
+                <div class="col-sm-4">
+                    <img src="@Url.Content("~/Content/Images/book1.jpg")" />
+                </div>
+                <div class="col-sm-4">
+                    <img src="@Url.Content("~/Content/Images/book2.jpg")" />
+                </div>
+                <div class="col-sm-4">
+                    <img src="@Url.Content("~/Content/Images/book3.jpg")" />
+                </div>
             </div>
-        }
+        
+    </div>
+    <div class="col-md-6" style="background-color:#DFE2DB;">
+       <h1>Newest books</h1> 
+        <div class="row">
+            <div class="col-sm-4">
+                <img src="@Url.Content("~/Content/Images/book4.jpg")" />
+            </div>
+            <div class="col-sm-4">
+                <img src="@Url.Content("~/Content/Images/book5.jpg")" />
+            </div>
+            <div class="col-sm-4">
+                <img src="@Url.Content("~/Content/Images/book6.jpg")" />
+            </div>
 
+        </div>
+       
     </div>
 </div>
+
+@*
+    <div class="row">
+        <div class="col-xs-12 col-md-12 ">
+            @foreach (var item in Model)
+            {
+                <div class="col-xs-12 col-md-1 ">
+                    @Html.DisplayFor(modelItem => item.Title)
+
+
+                </div>
+            }
+
+        </div>
+    </div>
+*@
+

@@ -19,9 +19,27 @@ select,
 textarea {
   max-width: 280px;
 }
-h2 {
+h1,
+h2,
+h3,
+h4 {
   font-weight: bold;
 }
-.input-validation-error {
-  border: 1px solid red;
+input.input-validation-error,
+textarea.input-validation-error,
+select.input-validation-error {
+  border: 1px solid #CD0A0A;
+}
+.navbar-inverse {
+  background-color: #191919;
+}
+#mainRow {
+  padding-top: 2cm;
+}
+.footeris {
+  background: #191919;
+  padding: 1em;
+  color: white;
+  clear: left;
+  text-align: center;
 }

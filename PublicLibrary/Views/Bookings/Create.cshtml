@@ -1,4 +1,4 @@
-﻿@model PublicLibrary.Models.Book
+﻿@model PublicLibrary.ViewModels.BookingViewModel
 
 @{
     ViewBag.Title = "Create";
@@ -61,11 +61,19 @@
                 </dd>
 
                 <dt>
-                    @Html.DisplayNameFor(model => model.IsItAvailable)
+                    @Html.DisplayNameFor(model => model.IfWantEmail)
                 </dt>
 
                 <dd>
-                    @Html.DisplayFor(model => model.IsItAvailable)
+                    @Html.CheckBoxFor(model => model.IfWantEmail)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.EnterEmail)
+                </dt>
+
+                <dd>
+                    @Html.EditorFor(model => model.EnterEmail)
                 </dd>
 
             </dl>

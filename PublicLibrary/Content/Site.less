@@ -1,8 +1,8 @@
 ﻿
 //variables
 @padding: 15px;
-@textColor: green;
 @boldFont: bold;
+@color: #191919;
 
 body {
     padding-top: 50px;
@@ -29,8 +29,43 @@ textarea {
     max-width: 280px;
 }
 
-h2 {
+h1, h2, h3, h4 {
     font-weight: @boldFont;
 }
 
-.input-validation-error{border: 1px solid red;}
+input.input-validation-error,
+textarea.input-validation-error,
+select.input-validation-error
+{
+   
+    border: 1px solid #CD0A0A;
+}
+
+.navbar-inverse {
+    background-color:@color;
+}
+
+
+//top padding for <div> with book images from home/index
+#mainRow {
+    padding-top: 2cm;
+}
+
+
+.footeris {
+
+   //padding-bottom: 1cm;
+   //position: relative;
+   //bottom: 0px;
+   //width: 100%;
+   background: @color;
+   padding: 1em;
+    color: white;
+    clear: left;
+    text-align: center;
+
+}
+
+
+
+
