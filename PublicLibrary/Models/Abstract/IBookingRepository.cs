@@ -8,6 +8,7 @@ namespace PublicLibrary.Models.Abstract
 {
     public interface IBookingRepository
     {
+
         IEnumerable<Booking> GetAll();
         Booking Find(int? id);
         void InsertOrUpdate(Booking booking);

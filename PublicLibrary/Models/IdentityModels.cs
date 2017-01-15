@@ -30,6 +30,7 @@ namespace PublicLibrary.Models
             return new ApplicationDbContext();
         }
 
+        //DbSet puts new tables in database according to their models
         public DbSet<Reader> Readers { get; set; }
 
         public System.Data.Entity.DbSet<PublicLibrary.Models.Book> Books { get; set; }

@@ -32,7 +32,8 @@ namespace PublicLibrary.Models.Repositories
 
         public void InsertOrUpdate(Booking booking)
         {
-            if (booking.BookId <= 0)
+            //if (booking.BookId <= 0)
+            if (booking.Id <=0)
             {
                 db.Bookings.Add(booking);
             }

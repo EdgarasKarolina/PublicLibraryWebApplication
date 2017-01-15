@@ -12,6 +12,8 @@ using PublicLibrary.Models.Abstract;
 using PublicLibrary.Models.Repositories;
 using System.Data.Entity.Infrastructure;
 
+
+
 using Microsoft;
 using PublicLibrary.ViewModels;
 
@@ -20,28 +22,29 @@ namespace PublicLibrary.Controllers
     [Authorize]
     public class BookingsController : Controller
     {
-/*
+      
+
         private IBookingRepository bookingRepo;
         private IReaderRepository readerRepo;
+        private IBookRepository bookRepo;
 
-        public BookingsController(IBookingRepository bookingRepo, IReaderRepository readerRepo)
+        public BookingsController(IBookingRepository bookingRepo, IReaderRepository readerRepo, IBookRepository bookRepo)
         {
             this.bookingRepo = bookingRepo;
             this.readerRepo = readerRepo;
+            this.bookRepo = bookRepo;
         }
 
-            */
+            
 
-        private ApplicationDbContext db = new ApplicationDbContext();
-
-      
-
-        
         // GET: Bookings
         [Authorize(Roles = "Boss")]
         public ActionResult Index()
         {
-            var bookings = db.Bookings.Include(b => b.Book).Include(b => b.Reader);
+           
+
+             var bookings = from booking in bookingRepo.GetAll()
+             select booking;
             
             return View(bookings.ToList());
         }  
@@ -50,26 +53,19 @@ namespace PublicLibrary.Controllers
         public ActionResult ShowUserBookings()
         {
             var userId = User.Identity.GetUserId();
-            int readerId = db.Readers.Where(c => c.ApplicationUserId == userId).First().ReaderId;
-            var bookings = db.Bookings.Include(b => b.Book).Include(b => b.Reader).Where(b=> b.ReaderId == readerId);
+          
+          int readerId = readerRepo.GetAll().Where(c => c.ApplicationUserId == userId).First().ReaderId;
+
+
+            var bookings = from booking in bookingRepo.GetAll()
+                           where booking.ReaderId == readerId
+                           select booking;
+                               
+
              return View(bookings.ToList());
             
         }
-        /*
-        // GET: Bookings/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Booking booking = bookingRepo.Find(id);
-            if (booking == null)
-            {
-                return HttpNotFound();
-            }
-            return View(booking);
-        }  */
+       
 
         
         // GET: Bookings/Details/5
@@ -79,7 +75,8 @@ namespace PublicLibrary.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Booking booking = db.Bookings.Find(id);
+            
+            Booking booking = bookingRepo.Find(id);
             if (booking == null)
             {
                 return HttpNotFound();
@@ -88,7 +85,6 @@ namespace PublicLibrary.Controllers
         }  
 
         // GET: Bookings/Create
-        //using modelView instead of model
         public ActionResult Create(int? id)
         {
 
@@ -97,27 +93,22 @@ namespace PublicLibrary.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            Book book = db.Books.Find(id);
+            
+            Book book = bookRepo.Find(id);
 
             if (book == null)
             {
                 return HttpNotFound();
             }
-            // ViewBag.BookId = new SelectList(db.Books, "BookId", "Title");
-            // ViewBag.BookIdd = id;
-            //ViewBag.ReaderId = new SelectList(db.Readers, "ReaderId", "AccountNumber");
-
-            /* var userId = User.Identity.GetUserId();
-             int readerId = db.Readers.Where(c => c.ApplicationUserId == userId).First().ReaderId;
-             ViewBag.ReaderId = readerId; */
-            // ViewBag.ApplicationUserId = readerId;
+            
             BookingViewModel bookingViewModel = new BookingViewModel();
             bookingViewModel.BookId = book.BookId;
+
             bookingViewModel.Title = book.Title;
             bookingViewModel.Author = book.Author;
             bookingViewModel.YearPublished = book.YearPublished;
             bookingViewModel.Genre = book.Genre;
-            bookingViewModel.NumberOfPages = book.NumberOfPages;
+            bookingViewModel.NumberOfPages = book.NumberOfPages; 
 
 
             return View(bookingViewModel);
@@ -132,28 +123,30 @@ namespace PublicLibrary.Controllers
             if (ModelState.IsValid)
             {
                 var userId = User.Identity.GetUserId();
-                int readerId = db.Readers.Where(c => c.ApplicationUserId == userId).First().ReaderId;
+               
+                int readerId = readerRepo.GetAll().Where(c => c.ApplicationUserId == userId).First().ReaderId;
 
-                //assigning values to booking object
+            
                 booking.ReaderId = readerId;
                 booking.BookId = bookingViewModel.BookId;
+
+
                 
-                
-                db.Bookings.Add(booking);
+                bookingRepo.InsertOrUpdate(booking);
+
+                //THIS IS VALUES THAT WE GET FROM VIEW MODEL
+                //AND WE ARE NOT USING THEM IN THE DATABASE
+                //OUR IDEA IS TO USE THEM IN ORDER TO SEND EMAILS TO USERS
                 bool value = bookingViewModel.IfWantEmail;
                 string value2 = bookingViewModel.EnterEmail;
-                db.SaveChanges();
+                
                 
                 return RedirectToAction("ShowUserBookings");
             }
-
-            ViewBag.BookId = new SelectList(db.Books, "BookId", "Title", booking.BookId);
-           // ViewBag.ReaderId = new SelectList(db.Readers, "ReaderId", "AccountNumber", booking.ReaderId);
-
-         /*   var userId = User.Identity.GetUserId();
-            int readerId = db.Readers.Where(c => c.ApplicationUserId == userId).First().ReaderId;
-            // ViewBag.ApplicationUserId = readerId;
-            ViewBag.ReaderId = readerId;  */
+            
+           
+            ViewBag.BookId = new SelectList(bookRepo.GetAll(), "BookId", "Title", booking.BookId);
+           
             return View(booking);
         }
 
@@ -165,19 +158,20 @@ namespace PublicLibrary.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Booking booking = db.Bookings.Find(id);
+            
+            Booking booking = bookingRepo.Find(id);
             if (booking == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.BookId = new SelectList(db.Books, "BookId", "Title", booking.BookId);
-            ViewBag.ReaderId = new SelectList(db.Readers, "ReaderId", "AccountNumber", booking.ReaderId);
+            
+            ViewBag.BookId = new SelectList(bookRepo.GetAll(), "BookId", "Title", booking.BookId);
+            
+            ViewBag.ReaderId = new SelectList(readerRepo.GetAll(), "ReaderId", "AccountNumber", booking.ReaderId);
             return View(booking);
         }
 
         // POST: Bookings/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [Authorize(Roles = "Boss")]
         [ValidateAntiForgeryToken]
@@ -185,12 +179,14 @@ namespace PublicLibrary.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(booking).State = EntityState.Modified;
-                db.SaveChanges();
+                ;
+                bookingRepo.InsertOrUpdate(booking);
                 return RedirectToAction("Index");
             }
-            ViewBag.BookId = new SelectList(db.Books, "BookId", "Title", booking.BookId);
-            ViewBag.ReaderId = new SelectList(db.Readers, "ReaderId", "AccountNumber", booking.ReaderId);
+            
+            ViewBag.BookId = new SelectList(bookRepo.GetAll(), "BookId", "Title", booking.BookId);
+           
+            ViewBag.ReaderId = new SelectList(readerRepo.GetAll(), "ReaderId", "AccountNumber", booking.ReaderId);
             return View(booking);
         }
 
@@ -202,7 +198,8 @@ namespace PublicLibrary.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Booking booking = db.Bookings.Find(id);
+           
+            Booking booking = bookingRepo.Find(id);
             if (booking == null)
             {
                 return HttpNotFound();
@@ -216,19 +213,21 @@ namespace PublicLibrary.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Booking booking = db.Bookings.Find(id);
-            db.Bookings.Remove(booking);
-            db.SaveChanges();
+            
+            Booking booking = bookingRepo.Find(id);
+            
+            bookingRepo.Delete(booking);
+            
             return RedirectToAction("Index");
         }
 
-        protected override void Dispose(bool disposing)
+      /*  protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
                 db.Dispose();
             }
             base.Dispose(disposing);
-        }
+        } */
     }
 }

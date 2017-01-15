@@ -14,11 +14,9 @@ namespace PublicLibrary.Controllers
 
         public ActionResult Index()
         {
-            /* var userId = User.Identity.GetUserId();
-             var readerId = db.Readers.Where(c => c.ApplicationUserId == userId).First().ApplicationUserId;
-             ViewBag.ApplicationUserId = readerId; */
-            return View(db.Books.ToList());
-           // return View();
+            
+            return View();
+          
         }
 
         public ActionResult About()

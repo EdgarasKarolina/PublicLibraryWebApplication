@@ -1,8 +1,6 @@
 ﻿@model IEnumerable<PublicLibrary.Models.Book>
 
-@{
-    ViewBag.Title = "Index";
-}
+
 
 <h2>Index</h2>
 
@@ -13,7 +11,7 @@
     {
     <p>
         Genre: @Html.DropDownList("bookGenre", "All")
-        Title: @Html.TextBox("SearchString") <br/>
+        Title: @Html.TextBox("title") <br/>
         <input type="submit" value="Filter" class="whatever"/>
     </p>
     }

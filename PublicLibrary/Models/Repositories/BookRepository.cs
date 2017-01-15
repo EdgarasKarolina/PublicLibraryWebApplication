@@ -9,38 +9,52 @@ namespace PublicLibrary.Models.Repositories
     public class BookRepository : IBookRepository
     {
 
-        private ApplicationDbContext db = new ApplicationDbContext();
+        private readonly ApplicationDbContext _db = new ApplicationDbContext();
 
-       
+
         public void Delete(Book book)
         {
-             db.Books.Remove(book);
-             db.SaveChanges();
+            _db.Books.Remove(book);
+            _db.SaveChanges();
         }
 
         public Book Find(int? id)
         {
-            return db.Books.Find(id);
+            return _db.Books.Find(id);
         }
 
-   
 
-public IEnumerable<Book> GetAll()
+
+        public IEnumerable<Book> GetAll()
         {
-            return db.Books;
+            return _db.Books;
         }
 
+        public IEnumerable<Book> GetBooksWithTitle(string title)
+        {
+            return _db.Books.Where((s => s.Title == title));
+        }
+
+        public IEnumerable<Book> GetBooksWithGenre(string bookGenre)
+        {
+            return _db.Books.Where(x => x.Genre == bookGenre);
+        }
+
+        public IEnumerable<Book> GetBooksWithTitleAndGenre(string title, string bookGenre)
+        {
+            return _db.Books.Where((s => s.Title == title)).Where(x => x.Genre == bookGenre);
+        }
         public void InsertOrUpdate(Book book)
         {
             if (book.BookId <= 0)
             {
-                db.Books.Add(book);
+                _db.Books.Add(book);
             }
             else
             {
-                db.Entry(book).State = System.Data.Entity.EntityState.Modified;
+                _db.Entry(book).State = System.Data.Entity.EntityState.Modified;
             }
-            db.SaveChanges();
+            _db.SaveChanges();
         }
     }
 }
